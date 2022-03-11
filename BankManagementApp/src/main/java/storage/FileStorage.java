@@ -8,6 +8,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Details.AccountDetails;
@@ -461,6 +462,20 @@ public class FileStorage implements Persistence
 	public boolean getRole(String id, String passWord) throws MistakeOccuredException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	@Override
+	public void updateAccount(int customerId, long accNo, String branch) throws MistakeOccuredException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<String> getBranch() throws MistakeOccuredException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

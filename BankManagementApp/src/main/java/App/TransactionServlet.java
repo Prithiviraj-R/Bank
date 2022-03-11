@@ -44,12 +44,11 @@ public class TransactionServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		HttpSession session=request.getSession();
-		if(session.getAttribute("lastId")==null)
+		if(session.getAttribute("userId")==null)
 		{
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
             rd.forward(request, response);
 		}
-		String value=request.getParameter("Customer");
 		try 
 		{
 			HelperUtil.stringCheck(request.getParameter("AccNum"));
@@ -62,15 +61,27 @@ public class TransactionServlet extends HttpServlet {
 		} 
 		catch (MistakeOccuredException e) 
 		{
-			e.printStackTrace();
+			request.setAttribute("text", e.getMessage());
+			if(request.getParameter("Customer").equals("Customer"))
+			{
+				RequestDispatcher req=request.getRequestDispatcher("CustomerCount?fromAccNum="+request.getParameter("AccNum")+"&moneyexchange=user");
+				req.forward(request, response);
+			}
+			else
+			{
+				RequestDispatcher req=request.getRequestDispatcher("CustomerCount?moneyexchange=transaction");
+				req.forward(request, response);
+			}
 		}
-		if(value.equals("Customer"))
+		if(request.getParameter("Customer").equals("Customer"))
 		{
-		RequestDispatcher req=request.getRequestDispatcher("UserServlet");
-		req.forward(request, response);
+			request.setAttribute("text", "Transaction sucessfully");
+			RequestDispatcher req=request.getRequestDispatcher("UserServlet");
+			req.forward(request, response);
 		}
 		else
 		{
+			request.setAttribute("text", "Transaction sucessfully");
 			RequestDispatcher req=request.getRequestDispatcher("AccountServlet");
 			req.forward(request, response);
 		}

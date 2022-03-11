@@ -1,0 +1,10 @@
+@charset "UTF-8";
+label 
+{
+color: black;
+font-weight: bold;
+width: 150px;
+text-align:center;
+text-decoration:underline;
+font-size:large;
+}

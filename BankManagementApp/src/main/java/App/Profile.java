@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import Details.AccountDetails;
 import Details.Customer;
 import logic_With_persistence.LogicLayer;
 import newexception.MistakeOccuredException;
@@ -44,14 +45,17 @@ public class Profile extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		LogicLayer obj=new LogicLayer(false);
+		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		HttpSession session=request.getSession();
-		if(session.getAttribute("userId")==null)
+		if(session.getAttribute("lastId")==null)
 		{
 			RequestDispatcher req=request.getRequestDispatcher("login.jsp");
 			req.forward(request, response);
 		}
+		else
+		{
 		Customer cusObj=null;
+		AccountDetails accObj=null;
 		try {
 			if(request.getParameter("update").equals("active"))
 			{
@@ -59,9 +63,8 @@ public class Profile extends HttpServlet {
 		        int id=Integer.parseInt(request.getParameter("customerId"));
 		        cusObj=obj.getCustomerDetails(id);
 		        session.setAttribute("Customer", cusObj);
-				RequestDispatcher req=request.getRequestDispatcher("update.jsp");
+				RequestDispatcher req=request.getRequestDispatcher("AddCustomer.jsp");
 				req.forward(request, response);
-				doGet(request, response);
 			}
 			else if(request.getParameter("update").equals("profile"))
 			{
@@ -72,8 +75,17 @@ public class Profile extends HttpServlet {
 				req.forward(request, response);
 				doGet(request, response);
 			}
-		}catch (NumberFormatException | MistakeOccuredException e) {
+			else if(request.getParameter("update").equals("account"))
+			{
+				accObj=obj.getAccount(Integer.parseInt(request.getParameter("acc")), Long.parseLong(request.getParameter("accNo")));
+				session.setAttribute("Account", accObj);
+				RequestDispatcher req=request.getRequestDispatcher("CustomerCount?moneyexchange=update");
+				req.forward(request, response);
+			}
+		}catch (NumberFormatException | MistakeOccuredException e)
+		{
 			e.printStackTrace();
+		}
 		}
 	}
 

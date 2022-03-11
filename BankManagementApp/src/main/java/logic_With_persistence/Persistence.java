@@ -1,5 +1,6 @@
 package logic_With_persistence;
 
+import java.util.List;
 import java.util.Map;
 import Details.AccountDetails;
 import Details.Customer;
@@ -30,4 +31,8 @@ public interface Persistence
 	public int lastRegisteredCustomer() throws MistakeOccuredException;
 	
 	public boolean getRole(String id,String passWord) throws MistakeOccuredException;
+	
+	public void updateAccount(int customerId,long accNo,String branch) throws MistakeOccuredException;
+	
+	public List<String> getBranch() throws MistakeOccuredException;
 }

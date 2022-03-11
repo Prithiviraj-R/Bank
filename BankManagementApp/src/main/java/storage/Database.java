@@ -1,6 +1,8 @@
 package storage;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Details.AccountDetails;
@@ -29,7 +31,7 @@ public class Database implements Persistence
 		Statement st=con.createStatement();)
 		{
 			String query1="create table if not exists customerInfo(customerID int not null auto_increment,name varchar(25),dob varchar(10),address varchar(25),mobileNo bigint,status tinyint,primary key(customerID));";
-		    String query2="create table if not exists accountInfo(accountID int not null auto_increment,customerID int not null,branchName varchar(13),balance int,status tinyint,primary key(accountID),foreign key(customerID) references customerInfo(customerID));";
+		    String query2="create table if not exists accountInfo(accountID int not null auto_increment,customerID int not null,branchName varchar(20),balance int,status tinyint,primary key(accountID),foreign key(customerID) references customerInfo(customerID),foreign key(branchName) references branch(Branch));";
 		    int count1=st.executeUpdate(query1);		  
 			
 			int count2=st.executeUpdate(query2);
@@ -110,8 +112,7 @@ public class Database implements Persistence
 		}
 		catch (SQLException e) 
 		{
-			e.printStackTrace();
-			throw new MistakeOccuredException(e);
+			throw new MistakeOccuredException("Performed Action is failed");
 		}
 	}
 	
@@ -135,11 +136,11 @@ public class Database implements Persistence
 		
 		Map<Long, AccountDetails> accDetailsMap = accountMap.get(id);
 		
-		HelperUtil.objectCheck(accDetailsMap, "Customer account");
+		HelperUtil.objectCheck(accDetailsMap, "Customer id is not correct");
 		
 		AccountDetails accInfo = accDetailsMap.get(accNum);
-		
-		HelperUtil.objectCheck(accInfo, "Account Information ");
+
+		HelperUtil.objectCheck(accInfo, "Account id is not belong for this customer & ");
 		
 		double newBalance=accInfo.getBalance()+amount;
 		
@@ -155,11 +156,11 @@ public class Database implements Persistence
 		
 		Map<Long, AccountDetails> accDetailsMap = accountMap.get(id);
 		
-		HelperUtil.objectCheck(accDetailsMap, "CustomerId");
+		HelperUtil.objectCheck(accDetailsMap, "CustomerId is not correct");
 		
 		AccountDetails accInfo = accDetailsMap.get(accNum);
 		
-		HelperUtil.objectCheck(accInfo, "AccountDetails");
+		HelperUtil.objectCheck(accInfo, "Account id is not belong for this customer & ");
 		
 //		accountAccess(accInfo);
 		
@@ -176,10 +177,15 @@ public class Database implements Persistence
 
     public void amountTransfer(long fromAccNo,long toAccNo,double amount) throws MistakeOccuredException
     {
+    	if(fromAccNo==toAccNo)
+    	{
+    		throw new MistakeOccuredException("Transaction cannot be done between same Account.");
+    	}
     	AccountDetails fromAccInfo=getAccountWithAccNo(fromAccNo);
     	AccountDetails toAccInfo=getAccountWithAccNo(toAccNo);
     	double balance=toAccInfo.getBalance();
     	double newBalance=balance+amount;
+    	System.out.println(newBalance);
     	updateRecord("update accountInfo set balance="+ newBalance +" Where accountId="+toAccNo+";");
         double fromAccBalance=fromAccInfo.getBalance();
         if(fromAccBalance<amount)
@@ -285,7 +291,7 @@ public class Database implements Persistence
  	    }
  		catch(SQLException ex)
  		{
- 			throw new MistakeOccuredException(ex);
+ 			throw new MistakeOccuredException("Transaction failed");
  		}
 }
  	public void updateCustomer(int customerId,String name,String dob,String address,long phno) throws MistakeOccuredException
@@ -299,6 +305,26 @@ public class Database implements Persistence
 			statement.setString(3, address);
 			statement.setLong(4, phno);
 			statement.setInt(5, customerId);
+			int number=statement.executeUpdate();
+			System.out.println("Sucessfully Updated");
+		}
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+			throw new MistakeOccuredException(e);
+		}
+	}
+ 	public void updateAccount(int customerId,long accNo,String branch) throws MistakeOccuredException
+	{
+        System.out.println(branch);
+        System.out.println(customerId);
+        System.out.println(accNo);
+ 		String query="update accountInfo set branchName = ? where accountID= ?;";
+		try(Connection con=DriverManager.getConnection(url, uName, pass);
+				PreparedStatement statement=con.prepareStatement(query))
+		{
+			statement.setString(1, branch);
+			statement.setLong(2, accNo);
 			int number=statement.executeUpdate();
 			System.out.println("Sucessfully Updated");
 		}
@@ -338,6 +364,26 @@ public class Database implements Persistence
 		     rs.next();
 		     boolean role=rs.getBoolean("role");
 		     return role;
+		}
+		catch(SQLException ex)
+		{
+	        throw new MistakeOccuredException("Entered username or password is invalid");
+		}
+ 	}
+ 	
+ 	public List<String> getBranch() throws MistakeOccuredException
+ 	{
+ 		List<String> branchList=new ArrayList<>();
+ 		String query="select Branch from branch;";
+		try(Connection con=DriverManager.getConnection(url, uName, pass);
+			     Statement statement=con.createStatement();)
+		{	
+		     ResultSet rs=statement.executeQuery(query);
+		     while(rs.next())
+		     {
+		        branchList.add(rs.getString("Branch"));
+		     }
+		     return branchList;
 		}
 		catch(SQLException ex)
 		{

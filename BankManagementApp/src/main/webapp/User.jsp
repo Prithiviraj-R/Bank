@@ -6,38 +6,25 @@
 <head>
 <meta charset="UTF-8">
 <title>User Options</title>
+<link href="commonstyle.css" type="text/css" rel="stylesheet">
+<link href="label.css" type="text/css" rel="stylesheet">
+<link href="button.css" type="text/css" rel="stylesheet">
 <style>
-div
-{
-float:right;
-}
 form.b
 {
 border:2px solid black;
 width:1000px;
 background-color:Ivory;
 }
-table, th, td
-{
-margin-top:25px;
-  border: 1px solid;
-  width:1025px;
-  margin-left:0px;
-  padding:3px;
-}
-body
-{
-background-color:LavenderBlush;
-}
-a
-{
-border:none;
-colour:blue;
-}
 </style>
 </head>
 <body>
 <h1 style="color:green">Welcome.</h1>
+<h4><b><%if(request.getAttribute("text")!=null)
+	{
+	     out.println("**"+(String) request.getAttribute("text"));
+	}
+%></b></h4>
 <jsp:include page="usersidebar.jsp" />
 <div>
 <form class="b">

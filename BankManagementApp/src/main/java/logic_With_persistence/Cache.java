@@ -90,6 +90,17 @@ public class Cache
 		return accountsBelongtoCus;
 		
 	}
+	
+	public AccountDetails getAccount(int id,long accNo)
+	{
+		
+		Map<Long, AccountDetails> accountsBelongtoCus = account.get(id);
+		
+		AccountDetails accDetails=accountsBelongtoCus.get(accNo);
+		
+		return accDetails;
+	}
+	
 
 	public void setCustomerStatus(int id,int status)
 	{
@@ -221,16 +232,16 @@ public class Cache
 	
 	public Map<Integer,Customer> getAllactiveCustomer()
 	{
-		Map<Integer,Customer> inactiveAccount=new HashMap<>();
+		Map<Integer,Customer> activeAccount=new HashMap<>();
 		Set<Integer> customerIdList=customer.keySet();
 		for(Integer id:customerIdList)
 		{
 			if(customer.get(id).isStatus()==true)
 			{
-				inactiveAccount.put(id,customer.get(id));
+				activeAccount.put(id,customer.get(id));
 			}
 		}
-		return inactiveAccount;
+		return activeAccount;
 	}
 	
 	public Map<Integer,Customer> getAllInactiveCustomer()
@@ -247,7 +258,7 @@ public class Cache
 		return inactiveAccount;
 	}
 	
-	public long getAllAccountId()
+	public int accountCount()
 	{
 		List<Long> accountId=new ArrayList<>();
 		Set<Integer> customerId=account.keySet();
@@ -258,7 +269,34 @@ public class Cache
 				accountId.add((long) accNo);
 			}
 		}
-		return Collections.max(accountId);
+		return accountId.size();
+	}
+	
+	public int activeAccountCount()
+	{
+		List<Long> accountId=new ArrayList<>();
+		Set<Integer> customerId=account.keySet();
+		for(Integer id:customerId)
+		{
+			for(Object accNo:account.get(id).keySet())
+			{
+				if(account.get(id).get(accNo).isStatus()==true)
+				{
+					accountId.add((long)accNo);
+				}
+			}
+		}
+		return accountId.size();
+	}
+	public int customerCount()
+	{
+		List<Integer> customerId=new ArrayList<>();
+		Set<Integer> idSet=customer.keySet();
+		for(Integer id:idSet)
+		{
+			customerId.add(id);
+		}
+		return customerId.size();
 	}
 }
 

@@ -47,7 +47,7 @@ public class UserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		// TODO Auto-generated method stub
-		LogicLayer obj=new LogicLayer(false);
+		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		HttpSession session=request.getSession();
 		if(session.getAttribute("userId")==null)
 		{
@@ -64,8 +64,9 @@ public class UserServlet extends HttpServlet {
 			req.forward(request, response);
 		} catch (MistakeOccuredException e) 
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			request.setAttribute("text","Details cannot be fetched.");
+			RequestDispatcher req=request.getRequestDispatcher("User.jsp");
+			req.forward(request, response);
 		}
 		doGet(request, response);
 	}

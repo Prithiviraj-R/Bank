@@ -56,25 +56,31 @@ public void init(ServletConfig config) throws ServletException
 		HttpSession session = request.getSession();
 		String id =request.getParameter("uname");
 		String password =request.getParameter("psw");
-		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
-		int id1=0;
-		long accNo=0l;
 		session.setAttribute("userId", id);
 		if(session.getAttribute("userId")==null)
 		{
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
             rd.forward(request, response);
 		}
+		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
+		int id1=0;
+		int accNo=0;
+		int activeCusId=0;
+		int activeAccId=0;
 		try 
 		{
 			HelperUtil.stringCheck(id);
 			HelperUtil.stringCheck(password);
 			id1 = obj.lastCustomer();
 			accNo=obj.getLastAccountId();
+			activeCusId=obj.getactiveCustomerCount();
+			activeAccId=obj.activeAccountCount();
 		}
 		catch (MistakeOccuredException e) {}
 		session.setAttribute("lastId",id1);
 		session.setAttribute("lastAcc", accNo);
+		session.setAttribute("activeCus", activeCusId);
+		session.setAttribute("activeAcc", activeAccId);
 		if(session.getAttribute("lastId")==null)
 		{
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  

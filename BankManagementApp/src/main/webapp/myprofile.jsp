@@ -6,23 +6,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer details</title>
-<style>
-fieldset
-{
-background-color:Ivory;
-width:400px;
-}
-body
-{
-background-color:LavenderBlush;
-}
-div
-{
-float:right;
-}
-</style>
+<link href="commonstyle.css" type="text/css" rel="stylesheet">
+<link href="label.css" type="text/css" rel="stylesheet">
+<link href="button.css" type="text/css" rel="stylesheet">
 </head>
 <body>
+<h1>Customer details</h1>
 <jsp:include page="usersidebar.jsp" />
 <div>
 <%Customer obj=(Customer) session.getAttribute("Customer");%>

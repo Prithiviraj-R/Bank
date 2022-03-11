@@ -44,26 +44,28 @@ public class Add extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		LogicLayer obj=new LogicLayer(false);
+		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		HttpSession session=request.getSession();
-		if(session.getAttribute("lastId")==null)
+		if(session.getAttribute("userId")==null)
 		{
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
             rd.forward(request, response);
 		}
+		else
+		{
 		if(request.getParameter("action").equals("Customer"))
 		{
 		try
 		{
-		HelperUtil.stringCheck(request.getParameter("name"));
-		HelperUtil.stringCheck(request.getParameter("Dob"));
-		HelperUtil.stringCheck(request.getParameter("Address"));
-		HelperUtil.stringCheck(request.getParameter("phNo"));
+		HelperUtil.stringCheck(request.getParameter("name"),"please Enter the correct name.");
+		HelperUtil.stringCheck(request.getParameter("dob"));
+		HelperUtil.stringCheck(request.getParameter("address"),"please enter the correct address");
+		HelperUtil.stringCheck(request.getParameter("phone"));
 		String name=request.getParameter("name");
-		String dob=request.getParameter("Dob");
-		String address=request.getParameter("Address");
-		HelperUtil.numberCheck((int) Long.parseLong(request.getParameter("phNo")));
-		long phoneNumber=Long.parseLong(request.getParameter("phNo"));
+		String dob=request.getParameter("dob");
+		String address=request.getParameter("address");
+		HelperUtil.numberCheck((int) Long.parseLong(request.getParameter("phone")));
+		long phoneNumber=Long.parseLong(request.getParameter("phone"));
 		Customer cusObj=new Customer();
 		cusObj.setName(name);
 		cusObj.setDob(dob);
@@ -79,6 +81,7 @@ public class Add extends HttpServlet {
 		   disp.forward(request, response);
 	   }
 	   System.out.println("Sucessfully inserted");
+	   request.setAttribute("text","Customer added sucessfully");
 	   RequestDispatcher disp=request.getRequestDispatcher("CustomerServlet");
 	   disp.forward(request, response);
 	   }
@@ -87,23 +90,30 @@ public class Add extends HttpServlet {
 		   try 
 		   {
 			HelperUtil.stringCheck(request.getParameter("cars"));
-			HelperUtil.stringCheck(request.getParameter("Branch"));
+			HelperUtil.stringCheck(request.getParameter("branch"));
 			HelperUtil.stringCheck(request.getParameter("Balance"));
 			int id=Integer.parseInt(request.getParameter("cars"));
-		    String branch=request.getParameter("Branch");
+		    String branch=request.getParameter("branch");
+		    System.out.println(branch);
 		    double amount=Double.parseDouble(request.getParameter("Balance"));
+		    HelperUtil.numberCheck((int) amount);
 		    AccountDetails accDetails=new AccountDetails();
 		    accDetails.setCustomerId(id);
 		    accDetails.setBranch(branch);
 		    accDetails.setBalance(amount);
-				obj.accountToCustomerId((int) id,accDetails);
-			} catch (MistakeOccuredException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			obj.accountToCustomerId((int) id,accDetails);
+			request.setAttribute("text","Account added sucessfully");
 			RequestDispatcher req=request.getRequestDispatcher("AccountServlet");
 			req.forward(request, response);
+			} 
+		   catch (MistakeOccuredException e) 
+			{
+			   e.printStackTrace();
+				   request.setAttribute("message",e.getMessage());
+				   RequestDispatcher disp=request.getRequestDispatcher("CustomerCount?moneyexchange=addAccount");
+				   disp.forward(request, response);
+			}
+		}
 		}
 		doGet(request, response);
 	}

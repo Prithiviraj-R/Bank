@@ -45,7 +45,7 @@ public class CustomerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		LogicLayer obj=new LogicLayer(false);
+		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		HttpSession session=request.getSession();
 		if(session.getAttribute("lastId")==null)
 		{

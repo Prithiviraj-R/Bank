@@ -47,20 +47,30 @@ public class CustomerCount extends HttpServlet {
 		// TODO Auto-generated method stub
 		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		List allId=null;
+		List branch=null;
 		Map<Integer,Map<Long,AccountDetails>> accountMap=null;
+		HttpSession session=request.getSession();
+		if(session.getAttribute("userId")==null)
+		{
+			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
+            rd.forward(request, response);	
+		}
+		else
+		{
 		try 
 		{
 			allId=obj.getAllActiveCustomerId();
 			accountMap=obj.getAllAccount();
+			branch=obj.getBranch();
 		} 
 		catch (MistakeOccuredException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		HttpSession session=request.getSession();
 		request.setAttribute("AllId",allId);
 		request.setAttribute("AccountMap", accountMap);
+		request.setAttribute("Branch",branch);
 		String name=request.getParameter("moneyexchange");
 		request.setAttribute("moneyexchange", name);
 		if(request.getParameter("moneyexchange").equals("deposit"))
@@ -75,6 +85,7 @@ public class CustomerCount extends HttpServlet {
 		}
 		else if(request.getParameter("moneyexchange").equals("transaction"))
 		{
+			System.out.println("hello");
 			RequestDispatcher req=request.getRequestDispatcher("AdminTransaction.jsp");
 			req.forward(request, response);
 		}
@@ -88,7 +99,12 @@ public class CustomerCount extends HttpServlet {
 			RequestDispatcher req=request.getRequestDispatcher("Transaction.jsp");
 			req.forward(request, response);
 		}
-		doGet(request, response);
+		else if(request.getParameter("moneyexchange").equals("update"))
+		{
+			RequestDispatcher req=request.getRequestDispatcher("AddAccount.jsp");
+			req.forward(request, response);
+		}
+		}
 	}
 
 }

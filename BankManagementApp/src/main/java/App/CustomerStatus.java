@@ -68,6 +68,7 @@ public class CustomerStatus extends HttpServlet {
 	    {
 		   System.out.println(e.getMessage());	
 		}
+	    request.setAttribute("text","Customer status updated Successfully");
 		RequestDispatcher req=request.getRequestDispatcher("CustomerServlet");
 		req.forward(request, response);
 		}
@@ -77,15 +78,18 @@ public class CustomerStatus extends HttpServlet {
 			{
 				HelperUtil.stringCheck(request.getParameter("cusId"));
 				HelperUtil.stringCheck(request.getParameter("accId"));
-				HelperUtil.stringCheck(request.getParameter("status"));
+				HelperUtil.stringCheck(request.getParameter("status"),"please Enter the correct Status");
 			    int id=Integer.parseInt(request.getParameter("cusId"));
 			    long accNo=Long.parseLong(request.getParameter("accId"));
 			    int status=Integer.parseInt(request.getParameter("status"));
 				obj.setAccountStatus(id, accNo, status);
-			} catch (MistakeOccuredException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (MistakeOccuredException e) 
+			{
+				request.setAttribute("text","status is not updated");
+				RequestDispatcher req=request.getRequestDispatcher("AccountServlet");
+				req.forward(request, response);
 			}
+			request.setAttribute("text","status updated sucessfully.");
 			RequestDispatcher req=request.getRequestDispatcher("AccountServlet");
 			req.forward(request, response);
 		}

@@ -45,7 +45,7 @@ public class Deposit extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session=request.getSession();
-		LogicLayer obj=new LogicLayer(false);
+		LogicLayer obj=(LogicLayer) request.getServletContext().getAttribute("Object");
 		if(session.getAttribute("lastId")==null)
 		{
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");  
@@ -66,12 +66,14 @@ public class Deposit extends HttpServlet {
 	    	if(request.getParameter("moneyexchange").equals("deposit"))
 	    	{
 	    		obj.deposit(id, accNo, amount);
+	    		request.setAttribute("text","Deposited Sucessfully");
 	    		RequestDispatcher req=request.getRequestDispatcher("AccountServlet");
 		 	    req.forward(request, response);
 	    	}
 	    	else if(request.getParameter("moneyexchange").equals("withdraw"))
 	    	{
 	    	    obj.withDraw(id, accNo, amount);
+	    	    request.setAttribute("text","Withdrawed Sucessfully");
 	    	    RequestDispatcher req=request.getRequestDispatcher("AccountServlet");
 		 	    req.forward(request, response);
 	    	}
@@ -79,8 +81,18 @@ public class Deposit extends HttpServlet {
 	    catch (MistakeOccuredException e) 
 	    {
 	    	request.setAttribute("text",e.getMessage());
-	    	RequestDispatcher req=request.getRequestDispatcher("deposit.jsp");
-	 	    req.forward(request, response);
+	    	if(request.getParameter("moneyexchange").equals("deposit"))
+	    	{
+		    	RequestDispatcher req=request.getRequestDispatcher("CustomerCount?moneyexchange=deposit");
+		 	    req.forward(request, response);
+	    	}
+	    	else if(request.getParameter("moneyexchange").equals("withdraw"))
+	    	{
+	    	    RequestDispatcher req=request.getRequestDispatcher("CustomerCount?moneyexchange=withdraw");
+		 	    req.forward(request, response);
+	    	}
+	    	System.out.println(e.getMessage());
+	    	
 		}
 	}
 

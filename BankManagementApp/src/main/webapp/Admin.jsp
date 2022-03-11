@@ -58,6 +58,18 @@ float:right;
 <br>
 <%out.println(session.getAttribute("lastAcc")); %>
 <br>
+<br>
+<label><b>ACTIVE CUSTOMER COUNT</b></label>
+<br>
+<br>
+<%out.println(session.getAttribute("activeCus")); %>
+<br>
+<br>
+<label><b>ACTIVE ACCOUNT COUNT</b></label>
+<br>
+<br>
+<%out.println(session.getAttribute("activeAcc")); %>
+<br>
 </fieldset>
 </div>
 </body>

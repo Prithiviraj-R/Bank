@@ -6,42 +6,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link href="commonstyle.css" type="text/css" rel="stylesheet">
+<link href="label.css" type="text/css" rel="stylesheet">
+<link href="button.css" type="text/css" rel="stylesheet">
 <title>Transaction</title>
 <style>
-select
-{
-width:100px;
-}
-fieldset
-{
-width:800px;
-background-color:ivory;
-margin:auto;
-padding:41px;
-}
-body
-{
-background-color:LavenderBlush;
-}
-form.new
-{
-border:2px solid black;
-width:1000px;
-}
 div
 {
 float:right;
-}
-h1
-{
-color:green;
 }
 </style>
 </head>
 <body><h1 style="color:green">Welcome.</h1>
 <jsp:include page="usersidebar.jsp" />
+<a onclick="history.back()">Back</a>
 <div>
-<form class="new">
+<form class="new" onsubmit="return validAccNo()" name="myForm" id="myForm">
 <fieldset>
 <legend align="center">Transfer</legend>
 <label for="AccNum">From:</label><br><br>
@@ -49,7 +29,8 @@ color:green;
 <br><br>
 <input type="hidden" id="Customer" name="Customer" value="Customer">
 <label for="ToAccNum">to:</label><br><br>
-<select name="AccNo" id="cars">
+<select name="AccNo" id="cars" required>
+<option value="0">select</option>
 <%Map<Integer,Map<Long,AccountDetails>> obj2=(Map<Integer,Map<Long,AccountDetails>>) request.getAttribute("AccountMap"); 
   for(Integer i:obj2.keySet())
   {
@@ -72,7 +53,34 @@ color:green;
 <br>
 <button type="submit" formaction="TransactionServlet" formmethod="post">Send</button>
 </fieldset>
+<h4 class=warning><b><%if(request.getAttribute("text")!=null)
+	{
+	     out.println("**"+(String) request.getAttribute("text"));
+	}
+%></b></h4>
 </form>
 </div>
+<script>
+function validAccNo()
+{
+	     var x = document.myForm.Amount;
+	     if(Math.sign(x.value)==(-1))
+	     {
+		  alert("You are tried to enter the negative value");
+		  return false;
+	     }
+		var x=document.myForm.AccNum.value;
+	    var y=document.myForm.AccNo.value;
+		if(x==0 || y==0)
+			{
+			   alert("Enter valid Account Number");
+			   return false;
+			}
+		else
+			{
+			return true;
+			}
+}
+</script>
 </body>
 </html>
